@@ -3,7 +3,7 @@
 const SH = {P: 'Players', E: 'Entries', S: 'Stats', C: 'Config'};
 
 const DEFAULT_CONFIG = [
-  ['contestName', 'GFA Turkey Bowl'],
+  ['contestName', 'GFA Turkey Bowl (Round 1 only)'],
   ['salaryCap', 35000],
   ['slots', 'QB,RB,WR,WR,WR,DST'],
   ['maxEntries', 3],
