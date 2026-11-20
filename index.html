@@ -110,6 +110,8 @@ input{font-family:inherit;color:var(--ink)}
 .sent:hover{background:#e8e8ec}
 .sent.on{background:#e1f2db}
 .s-pts{font-weight:700}
+.sent.me{box-shadow:inset 3px 0 0 var(--green)}
+.sent.me .cl{font-weight:700}
 .drow{display:grid;grid-template-columns:44px minmax(0,1fr) 74px 58px;align-items:center;padding:0 10px}
 .dl{height:27px;border-bottom:1px solid var(--rowb);color:var(--ink);font-size:12px}
 .dl .b{font-weight:700}
@@ -401,7 +403,13 @@ const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt
 const r2 = n => Math.round(n * 100) / 100;
 const fmtPts = n => n == null ? "-" : r2(n).toFixed(2);
 const key = s => String(s).trim().toLowerCase();
-const LS_ENT = "contest_entries_v1", LS_NAME = "contest_name_v1";
+const LS_ENT = "contest_entries_v1", LS_NAME = "contest_name_v1", LS_MINE = "contest_mine_v1";
+const mineAll = () => { try { return JSON.parse(localStorage.getItem(LS_MINE) || "[]"); } catch (_) { return []; } };
+function saveMine(list) {
+  const all = mineAll().filter(m => !list.some(x => key(x.name) === key(m.name) && x.entry === m.entry));
+  try { localStorage.setItem(LS_MINE, JSON.stringify(all.concat(list))); } catch (_) {}
+}
+const findMine = e => mineAll().find(m => key(m.name) === key(e.name) && m.entry === (e.entry || 0) && (!e.salary || m.salary === e.salary));
 const PLUS = '<svg width="10" height="10" viewBox="0 0 16 16"><path d="M8 2.5v11M2.5 8h11" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>';
 const MINUS = '<svg width="10" height="10" viewBox="0 0 16 16"><path d="M2.5 8h11" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>';
 
@@ -564,9 +572,10 @@ function standings() {
     const k = key(e.name);
     seen[k] = (seen[k] || 0) + 1;
     const n = e.entry || seen[k];
-    const pl = Array.isArray(e.players) ? e.players : null;
-    const pts = pl ? pl.reduce((a, p) => a + (Number(S.points[p]) || 0), 0) : null;
-    return {id: i, name: e.name, label: cnt[k] > 1 ? `${e.name} (${n}/${cnt[k]})` : e.name, players: pl, salary: e.salary, pts, ts: e.ts || 0};
+    const mine = findMine({...e, entry: n});
+    const pl = Array.isArray(e.players) ? e.players : (mine ? mine.players : null);
+    const pts = pl && S.reveal ? pl.reduce((a, p) => a + (Number(S.points[p]) || 0), 0) : null;
+    return {id: i, name: e.name, label: cnt[k] > 1 ? `${e.name} (${n}/${cnt[k]})` : e.name, players: pl, mine: !!mine, salary: e.salary, pts, ts: e.ts || 0};
   });
   rows.sort((a, b) => ((b.pts ?? -1e9) - (a.pts ?? -1e9)) || (a.ts - b.ts));
   rows.forEach((r, i) => { r.rank = S.reveal ? ((i && r.pts === rows[i - 1].pts) ? rows[i - 1].rank : i + 1) : null; });
@@ -577,13 +586,13 @@ function renderStandings() {
   const rows = standings();
   const drafted = {};
   let nRev = 0;
-  rows.forEach(r => { if (r.players) { nRev++; r.players.forEach(p => drafted[p] = (drafted[p] || 0) + 1); } });
+  if (S.reveal) rows.forEach(r => { if (r.players) { nRev++; r.players.forEach(p => drafted[p] = (drafted[p] || 0) + 1); } });
 
-  if (S.sel == null || !rows.some(r => r.id === S.sel)) S.sel = rows.length ? rows[0].id : null;
+  if (S.sel == null || !rows.some(r => r.id === S.sel)) { const m = rows.find(r => r.mine); S.sel = m ? m.id : rows.length ? rows[0].id : null; }
   const q = key(S.sq);
   const vis = rows.filter(r => !q || r.label.toLowerCase().includes(q));
 
-  $("#slist").innerHTML = vis.map(r => `<div class="srow sent ${r.id === S.sel ? "on" : ""}" data-id="${r.id}">
+  $("#slist").innerHTML = vis.map(r => `<div class="srow sent ${r.id === S.sel ? "on" : ""} ${r.mine ? "me" : ""}" data-id="${r.id}">
       <div>${r.rank ?? "-"}</div>
       <div class="cl"><span>${esc(r.label)}</span></div>
       <div class="r">${r.players ? money(r.salary) : "-"}</div>
@@ -600,7 +609,7 @@ function renderStandings() {
     <div class="slots">${S.cfg.slots.map((s, i) => {
       const n = r.players ? r.players[i] : null;
       const pct = n && nRev ? (drafted[n] / nRev * 100).toFixed(1) + "%" : "";
-      const pts = n ? fmtPts(Number(S.points[n]) || 0) : "";
+      const pts = n && S.reveal ? fmtPts(Number(S.points[n]) || 0) : "";
       return `<div class="drow dl"><div>${esc(s)}</div><div class="cl">${n ? `${logo(S.pmap[n] && S.pmap[n].team)}<span>${esc(n)}</span>` : ""}</div><div class="r">${pct}</div><div class="r b">${pts}</div></div>`;
     }).join("")}</div>`;
 }
@@ -664,6 +673,8 @@ async function enter() {
       apply({config: {}, players: [], entries: e, points: {}});
     }
     try { localStorage.setItem(LS_NAME, name); } catch (_) {}
+    saveMine(subs.map((l, j) => ({name, entry: have + j + 1, players: l, salary: salOf(l), ts: Date.now()})));
+    renderAll();
     S.lineups = [blank()]; S.cur = 0;
     $("#mt").textContent = subs.length > 1 ? "Entries Submitted" : "Entry Submitted";
     $("#mb").textContent = `${name} · ${subs.length} ${subs.length > 1 ? "Lineups" : "Lineup"}`;
