@@ -135,13 +135,38 @@ input{font-family:inherit;color:var(--ink)}
 }
 @media(max-width:900px){
   .page{grid-template-columns:1fr}
-  .plist{height:55vh}
   .ch{padding:28px 16px 22px;flex-wrap:wrap}
   .live{text-align:left;min-width:0}
   .page{padding:0 12px 40px}
 }
+.mbar{display:none}
+@media(max-width:900px){
+  .plist{height:auto;min-height:0;max-height:none;overflow:visible}
+  .prow,.slot,.sent,.dl{height:40px;font-size:13.5px}
+  .add{width:26px;height:26px}
+  .add svg{width:12px;height:12px}
+  .ptabs{height:38px;position:sticky;top:56px;z-index:5}
+  .ptab{height:38px;flex:1;font-size:14px}
+  .th{position:sticky;top:94px;z-index:4}
+  .srch{flex:1;width:auto;height:34px}
+  .srch svg{top:11px}
+  .tools{height:34px}
+  input,.srch input,.act input{font-size:16px}
+  .act input,.enter{height:42px}
+  .lutab,.luadd{height:32px}
+  .lutabs{height:34px}
+  .slot .x{font-size:20px}
+  .mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:35;background:var(--strip);border-top:1px solid #333;padding:8px 12px calc(8px + env(safe-area-inset-bottom));align-items:center;justify-content:space-between;gap:10px}
+  .mbar .lus{font-size:12px}
+  .mbar button{height:36px;padding:0 14px;background:var(--green);color:#111;font-family:var(--cond);font-stretch:condensed;font-weight:700;font-size:15px;text-transform:uppercase;white-space:nowrap}
+  body.lv-on{padding-bottom:64px}
+  .pop{width:min(280px,calc(100vw - 16px))}
+}
 @media(max-width:560px){
-  .row{grid-template-columns:minmax(0,1fr) 30px 92px 38px 54px 26px;padding-left:8px}
+  .row{grid-template-columns:minmax(0,1fr) 30px 104px 38px 56px 32px;padding-left:10px}
+  .ch h1{font-size:20px}
+  .ch{padding:20px 12px 16px;gap:10px}
+  .lv{font-size:18px}
   .row .c-team{display:none}
   .meta{flex-wrap:wrap;gap:6px 14px}
   .enter{min-width:110px}
@@ -239,6 +264,7 @@ input{font-family:inherit;color:var(--ink)}
 </div>
 <div class="toast" id="toast"></div>
 <div class="pop hide" id="pop"></div>
+<div class="mbar" id="mbar"><span class="lus">Rem. Salary:<b id="mbRem"></b></span><button id="mbGo"></button></div>
 
 <script>
 /* ===== CONFIG ===== */
@@ -414,6 +440,8 @@ function renderAll() {
   document.querySelectorAll(".navtab").forEach(b => b.classList.toggle("on", b.dataset.v === S.view));
   $("#vLineup").classList.toggle("hide", S.view !== "lineup");
   $("#vStand").classList.toggle("hide", S.view !== "standings");
+  $("#mbar").classList.toggle("hide", S.view !== "lineup");
+  document.body.classList.toggle("lv-on", S.view === "lineup");
   if (S.view === "lineup") { renderPool(); renderLineup(); }
   else renderStandings();
 }
@@ -484,6 +512,9 @@ function renderLineup() {
   }).join("");
 
   $("#bEnter").disabled = S.busy || !!S.cfg.locked;
+  $("#mbRem").textContent = money(rem);
+  $("#mbRem").classList.toggle("neg", rem < 0);
+  $("#mbGo").textContent = `Lineup ${S.cur + 1} (${l.length - open}/${l.length})`;
 }
 
 function standings() {
@@ -692,6 +723,7 @@ $("#lutabs").onclick = e => {
 };
 $("#bClear").onclick = () => { S.lineups[S.cur] = blank(); S.pos = S.cfg.slots[0]; renderPool(); renderLineup(); };
 $("#bEnter").onclick = enter;
+$("#mbGo").onclick = () => $("#vLineup aside").scrollIntoView({behavior: "smooth", block: "start"});
 $("#mok").onclick = () => $("#ov").classList.add("hide");
 $("#mnext").onclick = () => {
   $("#ov").classList.add("hide");
