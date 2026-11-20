@@ -148,7 +148,8 @@ input{font-family:inherit;color:var(--text)}
 .mchk{width:52px;height:52px;border-radius:50%;background:var(--green);color:#000;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
 .mt{font-size:20px;font-weight:900}
 .mb{color:var(--muted);font-weight:700;margin:6px 0 20px}
-.modal .btn{width:100%}
+.mbtns{display:flex;flex-direction:column;gap:10px}
+.modal .btn{width:100%;flex:none}
 .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--red);color:#fff;font-weight:700;padding:12px 18px;border-radius:4px;opacity:0;pointer-events:none;transition:.2s;z-index:60;max-width:90vw;text-align:center}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
@@ -256,7 +257,7 @@ input{font-family:inherit;color:var(--text)}
     <div class="mchk"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
     <div class="mt" id="mt"></div>
     <div class="mb" id="mb"></div>
-    <button class="btn go" id="mok">OK</button>
+    <div class="mbtns"><button class="btn go hide" id="mnext"></button><button class="btn ghost" id="mok">Done</button></div>
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -353,7 +354,7 @@ const LOGOS = {
   "no feast no peace": "1572477144393580605/00557aa2062b5b6c139cbf9616b23d64",
   "the cranberry jams": "1573191694252384357/f1425443c2708678a337fa94a84b548b"
 };
-const logo = t => { const id = LOGOS[String(t || "").toLowerCase()]; return id ? `<img class="lg" src="https://cdn.discordapp.com/role-icons/${id}.webp?size=40&quality=lossless" alt="" loading="lazy">` : ""; };
+const logo = t => { const id = LOGOS[String(t || "").toLowerCase()]; return id ? `<img class="lg" src="https://cdn.discordapp.com/role-icons/${id}.webp?size=40&quality=lossless" alt="" loading="lazy" onerror="this.remove()">` : ""; };
 
 /* ===== HELPERS ===== */
 const $ = s => document.querySelector(s);
@@ -566,6 +567,12 @@ function toggle(n) {
     if (!p || s < 0) return;
     if (l.filter(x => !x).length === 1 && p.salary > S.cfg.salaryCap - salOf(l)) return;
     l[s] = n;
+    const tabs = [...new Set(S.cfg.slots)];
+    const hasOpen = t => S.cfg.slots.some((x, j) => !l[j] && (x === t || eligible(t, x) || eligible(x, t)));
+    if (!hasOpen(S.pos)) {
+      const i0 = tabs.indexOf(S.pos);
+      for (let k = 1; k <= tabs.length; k++) { const t = tabs[(i0 + k) % tabs.length]; if (hasOpen(t)) { S.pos = t; break; } }
+    }
   }
   renderPool(); renderLineup();
 }
@@ -612,6 +619,10 @@ async function enter() {
     S.lineups = [blank()]; S.cur = 0;
     $("#mt").textContent = subs.length > 1 ? "Entries Submitted" : "Entry Submitted";
     $("#mb").textContent = `${name} · ${subs.length} ${subs.length > 1 ? "Lineups" : "Lineup"}`;
+    const done = S.entries.filter(e => key(e.name) === key(name)).length;
+    const nx = $("#mnext");
+    nx.classList.toggle("hide", done >= max);
+    nx.textContent = `Draft Lineup ${done + 1}/${max}`;
     $("#ov").classList.remove("hide");
   } catch (err) {
     toast(err.message || "Submit failed");
@@ -702,6 +713,12 @@ $("#lutabs").onclick = e => {
 $("#bClear").onclick = () => { S.lineups[S.cur] = blank(); renderPool(); renderLineup(); };
 $("#bEnter").onclick = enter;
 $("#mok").onclick = () => $("#ov").classList.add("hide");
+$("#mnext").onclick = () => {
+  $("#ov").classList.add("hide");
+  S.lineups = [blank()]; S.cur = 0; S.pos = S.cfg.slots[0]; S.view = "lineup";
+  renderAll();
+  $("#plist").scrollTop = 0;
+};
 $("#sq").oninput = e => { S.sq = e.target.value; renderStandings(); };
 $("#slist").onclick = e => {
   const r = e.target.closest(".sent"); if (!r) return;
