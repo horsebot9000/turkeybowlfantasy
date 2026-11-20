@@ -448,7 +448,7 @@ function renderPool() {
     return `<div class="row prow ${cls}" data-n="${esc(p.name)}">
       <div class="c-pos">${esc(p.pos)}</div>
       <div class="c-name">${esc(p.name)}${p.linemen ? `<span class="ln">${esc(p.linemen)}</span>` : ""}</div>
-      <div class="c-team">${p.team ? esc(p.team) : "-"}</div>
+      <div class="c-team">${p.team ? `<span class="opp" data-o="${esc(p.team)}">${esc(p.team)}</span>` : "-"}</div>
       <div class="c-opp">${p.opp ? `<span class="opp" data-o="${esc(p.opp)}">${esc(p.opp)}</span>` : "-"}</div>
       <div class="c-bid r">${p.bid != null && p.bid !== "" ? money(p.bid) : "-"}</div>
       <div class="c-sal r">${money(p.salary)}</div>
