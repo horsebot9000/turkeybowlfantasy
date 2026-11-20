@@ -63,6 +63,10 @@ input{font-family:inherit;color:var(--text)}
 .prow.on{background:var(--green-tint)}
 .prow.dim{opacity:.4;cursor:default}
 .c-pos{font-weight:700;color:var(--muted);font-size:12px}
+.lg{width:18px;height:18px;object-fit:contain;vertical-align:-4px;margin-right:6px;flex:none}
+.pop-h .lg{width:20px;height:20px;vertical-align:-5px;margin-right:8px}
+.nm{display:flex;align-items:center;min-width:0}
+.nm>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ln{display:block;font-size:11px;font-weight:400;color:var(--muted);overflow:hidden;text-overflow:ellipsis;margin-top:2px}
 .c-name{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:8px}
 .c-team,.c-opp,.c-bid{color:var(--muted);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:8px}
@@ -334,6 +338,23 @@ const SEED = [
   ["The CranBerry JAMS", "DST", 2500, "The CranBerry JAMS", "No Feast No Peace", "", "Abdul Carter, Major Syn, Uki"]
 ];
 
+/* Team logos: Discord role icon ids */
+const LOGOS = {
+  "turkey stuffers": "1573105916935413810/fe18cde2b12afdab4950eb5f9aaa1c4f",
+  "harvest havoc": "1572476727068860476/dfbb518f2671695e58294e7d98dab92e",
+  "mashed mafia": "1572474596425343026/ca7e47b8f056095b2723b1b6177b6c46",
+  "yams": "1572475678761287690/6db1968883a919a9c81eda388f2fbb33",
+  "groovy gravys": "1573104859022893076/21f5dc3d9d2438a9339c9748292bc088",
+  "mac n maniacs": "1572479333233336450/5b8a00ba67424f6e1e10a12ae2416b0f",
+  "foggy pumpkins": "1572476319025860608/c8bd52d8906cc87439e22b68f4f5c276",
+  "the drunkles": "1572478458892779600/755059be810907acdde913b7d4324b54",
+  "the pilgrims": "1572476010555904130/87231e8e1f70e88942f936742fa58ee2",
+  "baked birds": "1572477899720888420/e8644c79f99e83d8dadcc01a69bef5e9",
+  "no feast no peace": "1572477144393580605/00557aa2062b5b6c139cbf9616b23d64",
+  "the cranberry jams": "1573191694252384357/f1425443c2708678a337fa94a84b548b"
+};
+const logo = t => { const id = LOGOS[String(t || "").toLowerCase()]; return id ? `<img class="lg" src="https://cdn.discordapp.com/role-icons/${id}.webp?size=40&quality=lossless" alt="" loading="lazy">` : ""; };
+
 /* ===== HELPERS ===== */
 const $ = s => document.querySelector(s);
 const money = n => (n < 0 ? "-$" : "$") + Math.abs(Math.round(n)).toLocaleString("en-US");
@@ -449,8 +470,8 @@ function renderPool() {
     return `<div class="row prow ${cls}" data-n="${esc(p.name)}">
       <div class="c-pos">${esc(p.pos)}</div>
       <div class="c-name">${esc(p.name)}${p.linemen ? `<span class="ln">${esc(p.linemen)}</span>` : ""}</div>
-      <div class="c-team">${p.team ? `<span class="opp" data-o="${esc(p.team)}">${esc(p.team)}</span>` : "-"}</div>
-      <div class="c-opp">${p.opp ? `<span class="opp" data-o="${esc(p.opp)}">${esc(p.opp)}</span>` : "-"}</div>
+      <div class="c-team">${p.team ? `${logo(p.team)}<span class="opp" data-o="${esc(p.team)}">${esc(p.team)}</span>` : "-"}</div>
+      <div class="c-opp">${p.opp ? `${logo(p.opp)}<span class="opp" data-o="${esc(p.opp)}">${esc(p.opp)}</span>` : "-"}</div>
       <div class="c-bid r">${p.bid != null && p.bid !== "" ? money(p.bid) : "-"}</div>
       <div class="c-sal r">${money(p.salary)}</div>
       <div class="c-add">${btn}</div>
@@ -475,7 +496,7 @@ function renderLineup() {
     const p = l[i] ? S.pmap[l[i]] : null;
     return `<div class="slot ${p ? "full" : ""}" data-i="${i}">
       <div class="s-pos">${esc(s)}</div>
-      <div class="s-name">${p ? esc(p.name) : ""}</div>
+      <div class="s-name">${p ? `<div class="nm">${logo(p.team)}<span>${esc(p.name)}</span></div>` : ""}</div>
       <div class="s-sal">${p ? money(p.salary) : ""}</div>
       <div class="s-x">${p ? `<span class="tx">&times;</span>` : ""}</div>
     </div>`;
@@ -532,7 +553,7 @@ function renderStandings() {
       const n = r.players ? r.players[i] : null;
       const pct = n && nRev ? (drafted[n] / nRev * 100).toFixed(1) + "%" : "-";
       const pts = n ? fmtPts(Number(S.points[n]) || 0) : "-";
-      return `<div class="drow dl"><div class="s-pos">${esc(s)}</div><div class="s-name">${n ? esc(n) : ""}</div><div class="r d-pct">${pct}</div><div class="r d-pts">${pts}</div></div>`;
+      return `<div class="drow dl"><div class="s-pos">${esc(s)}</div><div class="s-name">${n ? `<div class="nm">${logo(S.pmap[n] && S.pmap[n].team)}<span>${esc(n)}</span></div>` : ""}</div><div class="r d-pct">${pct}</div><div class="r d-pts">${pts}</div></div>`;
     }).join("")}`;
 }
 
@@ -606,7 +627,7 @@ function showPop(el) {
   const list = S.players.filter(p => p.team === t && (p.pos === "WR" || p.pos === "RB"))
     .sort((a, b) => (a.pos === b.pos ? 0 : a.pos === "WR" ? -1 : 1) || b.salary - a.salary);
   const pop = $("#pop");
-  pop.innerHTML = `<div class="pop-h">${esc(t)}</div>` + list.map(p =>
+  pop.innerHTML = `<div class="pop-h">${logo(t)}${esc(t)}</div>` + list.map(p =>
     `<div class="pop-r"><div class="s-pos">${esc(p.pos)}</div><div class="s-name">${esc(p.name)}</div><div class="r">${money(p.salary)}</div></div>`).join("")
     + (dst && dst.linemen ? `<div class="pop-r pop-dl"><div class="s-pos">DL</div><div class="s-name">${esc(dst.linemen)}</div></div>` : "");
   pop.classList.remove("hide");
