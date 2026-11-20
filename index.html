@@ -261,7 +261,7 @@ input{font-family:inherit;color:var(--text)}
 <script>
 /* ===== CONFIG ===== */
 const CONFIG = {
-  API_URL: "",                      // paste Apps Script web app URL here; blank = local test mode
+  API_URL: "https://script.google.com/macros/s/AKfycbyENCa2nz-p6qfiBUiPENh00SQz5cBvnn67ej62FTCesoDo0Lla3jsnRpnyyvnRpBzV_w/exec",                      // paste Apps Script web app URL here; blank = local test mode
   contestName: "GFA Turkey Bowl",
   salaryCap: 35000,
   slots: ["QB","RB","WR","WR","WR","DST"],
@@ -430,6 +430,7 @@ function renderPool() {
   });
 
   const q = key(S.q), l = lu(), {k, d} = S.sort;
+  const rem = S.cfg.salaryCap - salOf(l), last = l.filter(n => !n).length === 1;
   const list = S.players
     .filter(p => (S.pos === "ALL" || eligible(S.pos, p.pos)) && (!q || p.name.toLowerCase().includes(q)))
     .sort((a, b) => {
@@ -442,7 +443,7 @@ function renderPool() {
     });
 
   $("#plist").innerHTML = list.map(p => {
-    const inL = l.includes(p.name), open = slotFor(p) >= 0;
+    const inL = l.includes(p.name), open = slotFor(p) >= 0 && !(last && p.salary > rem);
     const cls = inL ? "on" : (!open ? "dim" : "");
     const btn = inL ? `<span class="add rm">${MINUS}</span>` : `<span class="add ${open ? "" : "off"}">${PLUS}</span>`;
     return `<div class="row prow ${cls}" data-n="${esc(p.name)}">
@@ -542,6 +543,7 @@ function toggle(n) {
   else {
     const p = S.pmap[n], s = p && slotFor(p);
     if (!p || s < 0) return;
+    if (l.filter(x => !x).length === 1 && p.salary > S.cfg.salaryCap - salOf(l)) return;
     l[s] = n;
   }
   renderPool(); renderLineup();
@@ -646,7 +648,7 @@ $("#phead").onclick = e => {
 };
 $("#plist").onclick = e => {
   const o = e.target.closest(".opp");
-  if (o) { if (!matchMedia("(hover:hover)").matches) { if (popFor === o) hidePop(); else showPop(o); } return; }
+  if (o && !matchMedia("(hover:hover)").matches) { if (popFor === o) hidePop(); else showPop(o); return; }
   const r = e.target.closest(".prow"); if (r) toggle(r.dataset.n);
 };
 $("#plist").onmouseover = e => { const o = e.target.closest(".opp"); if (o && matchMedia("(hover:hover)").matches) showPop(o); };
