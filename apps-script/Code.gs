@@ -3,7 +3,7 @@
 const SH = {P: 'Players', E: 'Entries', S: 'Stats', C: 'Config'};
 
 const DEFAULT_CONFIG = [
-  ['contestName', 'Discord Draft Classic'],
+  ['contestName', 'GFA Turkey Bowl'],
   ['salaryCap', 35000],
   ['slots', 'QB,RB,WR,WR,WR,DST'],
   ['maxEntries', 3],
