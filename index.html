@@ -347,7 +347,7 @@ const MINUS = '<svg width="14" height="14" viewBox="0 0 16 16"><path d="M3 8h10"
 
 let S = {
   cfg: {...CONFIG}, players: [], pmap: {}, entries: [], points: {}, reveal: false,
-  lineups: [], cur: 0, pos: "ALL", q: "", sort: {k: "salary", d: -1},
+  lineups: [], cur: 0, pos: "QB", q: "", sort: {k: "salary", d: -1},
   sq: "", sel: null, view: "lineup", busy: false
 };
 
@@ -418,8 +418,8 @@ function renderAll() {
 
 function renderPool() {
   hidePop();
-  const tabs = ["ALL", ...new Set(S.cfg.slots)];
-  if (!tabs.includes(S.pos)) S.pos = "ALL";
+  const tabs = [...new Set(S.cfg.slots)];
+  if (!tabs.includes(S.pos)) S.pos = tabs[0];
   $("#ptabs").innerHTML = tabs.map(t => `<button class="ptab ${S.pos === t ? "on" : ""}" data-p="${esc(t)}">${esc(t)}</button>`).join("");
 
   document.querySelectorAll("#phead [data-sort]").forEach(h => {
