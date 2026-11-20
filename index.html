@@ -32,6 +32,8 @@ input{font-family:inherit;color:var(--ink)}
 .lv{font-size:22px;font-weight:700;margin-top:4px}
 .lv.open{color:var(--green)}
 .lv.live2{color:var(--orange)}
+.lv.cd{color:#fff;font-variant-numeric:tabular-nums}
+.lt{font-size:11px;color:#d8d8dc;margin-top:4px}
 
 .page{max-width:1060px;margin:0 auto;padding:0 20px 60px;display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:18px;align-items:start}
 .tools{height:28px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
@@ -192,8 +194,9 @@ input{font-family:inherit;color:var(--ink)}
     </div>
   </div>
   <div class="live">
-    <div class="lk">Status</div>
+    <div class="lk" id="mLk"></div>
     <div class="lv" id="mStatus"></div>
+    <div class="lt" id="mLt"></div>
   </div>
 </header>
 
@@ -274,7 +277,8 @@ const CONFIG = {
   salaryCap: 35000,
   slots: ["QB","RB","WR","WR","WR","DST"],
   maxEntries: 3,
-  locked: false
+  locked: false,
+  lockTime: "2026-11-20T20:00:00-05:00"
 };
 const ELIG = {QB:["QB"],RB:["RB"],WR:["WR"],TE:["TE"],DST:["DST"],FLEX:["RB","WR","TE"],SFLEX:["QB","RB","WR","TE"]};
 
@@ -413,6 +417,7 @@ function apply(d) {
   const c = Object.fromEntries(Object.entries(d.config || {}).filter(([, v]) => v !== "" && v != null));
   delete c.contestName;
   S.cfg = {...CONFIG, ...c};
+  S.cfg.locked = !!S.cfg.locked || timeUp();
   S.players = (d.players && d.players.length) ? d.players
     : SEED.map(([name, pos, salary, team, opp, bid, linemen]) => ({name, pos, salary, team, opp, bid: bid === "" ? null : bid, linemen: linemen || ""}));
   S.pmap = Object.fromEntries(S.players.map(p => [p.name, p]));
@@ -433,9 +438,7 @@ function renderAll() {
   $("#mEntries").textContent = S.entries.length.toLocaleString("en-US");
   $("#mCap").textContent = money(S.cfg.salaryCap);
   $("#mMax").textContent = S.cfg.maxEntries;
-  const st = $("#mStatus");
-  st.textContent = S.cfg.locked ? "Live" : "Open";
-  st.className = "lv " + (S.cfg.locked ? "live2" : "open");
+  renderClock();
   $("#navLineup").classList.toggle("hide", !!S.cfg.locked);
   document.querySelectorAll(".navtab").forEach(b => b.classList.toggle("on", b.dataset.v === S.view));
   $("#vLineup").classList.toggle("hide", S.view !== "lineup");
@@ -664,6 +667,38 @@ function hidePop() {
   if (popFor) popFor.classList.remove("on");
   popFor = null;
 }
+
+const lockMs = () => { const t = Date.parse(S.cfg.lockTime); return isNaN(t) ? null : t; };
+const timeUp = () => { const t = lockMs(); return t != null && Date.now() >= t; };
+function renderClock() {
+  const t = lockMs(), st = $("#mStatus");
+  if (t != null) {
+    const d = new Date(t);
+    const hr = d.getHours() % 12 || 12, mn = String(d.getMinutes()).padStart(2, "0");
+    $("#mLt").textContent = `${d.getMonth() + 1}/${d.getDate()} • ${hr}:${mn} ${d.getHours() < 12 ? "am" : "pm"}`;
+  } else $("#mLt").textContent = "";
+  if (S.cfg.locked) {
+    $("#mLk").textContent = "Status";
+    st.textContent = "Live"; st.className = "lv live2";
+  } else if (t != null) {
+    const s = Math.max(0, Math.floor((t - Date.now()) / 1000));
+    const p = n => String(n).padStart(2, "0");
+    $("#mLk").textContent = "Contest Goes Live In";
+    st.textContent = `${p(Math.floor(s / 3600))}:${p(Math.floor(s / 60) % 60)}:${p(s % 60)}`;
+    st.className = "lv cd";
+  } else {
+    $("#mLk").textContent = "Status";
+    st.textContent = "Open"; st.className = "lv open";
+  }
+}
+setInterval(() => {
+  if (!S.cfg.locked && timeUp()) {
+    S.cfg.locked = true;
+    $("#ov").classList.add("hide");
+    renderAll();
+    load();
+  } else renderClock();
+}, 1000);
 
 let tt;
 function toast(m) {

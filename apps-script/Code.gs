@@ -7,7 +7,8 @@ const DEFAULT_CONFIG = [
   ['salaryCap', 35000],
   ['slots', 'QB,RB,WR,WR,WR,DST'],
   ['maxEntries', 3],
-  ['locked', false]
+  ['locked', false],
+  ['lockTime', '2026-11-20T20:00:00-05:00']
 ];
 
 const ELIG = {QB: ['QB'], RB: ['RB'], WR: ['WR'], TE: ['TE'], DST: ['DST'], FLEX: ['RB', 'WR', 'TE'], SFLEX: ['QB', 'RB', 'WR', 'TE']};
@@ -122,12 +123,15 @@ function readCfg_(ss) {
   DEFAULT_CONFIG.forEach(r => o[r[0]] = r[1]);
   const sh = ss.getSheetByName(SH.C);
   if (sh) sh.getDataRange().getValues().slice(1).forEach(r => { if (r[0] !== '') o[String(r[0]).trim()] = r[1]; });
+  const lt = o.lockTime instanceof Date ? o.lockTime : new Date(String(o.lockTime || ''));
+  const lockMs = isNaN(lt.getTime()) ? null : lt.getTime();
   return {
+    lockTime: lockMs == null ? '' : new Date(lockMs).toISOString(),
     contestName: String(o.contestName),
     salaryCap: Number(o.salaryCap) || 0,
     slots: String(o.slots).split(',').map(s => s.trim().toUpperCase()).filter(Boolean),
     maxEntries: Number(o.maxEntries) || 3,
-    locked: o.locked === true || String(o.locked).trim().toUpperCase() === 'TRUE'
+    locked: o.locked === true || String(o.locked).trim().toUpperCase() === 'TRUE' || (lockMs != null && Date.now() >= lockMs)
   };
 }
 
