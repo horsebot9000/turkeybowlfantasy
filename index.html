@@ -416,6 +416,11 @@ const lu = () => S.lineups[S.cur];
 const eligible = (slot, pos) => (ELIG[slot] || [slot]).includes(pos);
 const salOf = l => l.reduce((a, n) => a + (n && S.pmap[n] ? S.pmap[n].salary : 0), 0);
 
+function base() {
+  const n = key(($("#uname") || {}).value || "");
+  return n ? S.entries.filter(e => key(e.name) === n).length : 0;
+}
+
 function slotFor(p) {
   const l = lu(), sl = S.cfg.slots; let f = -1;
   for (let i = 0; i < sl.length; i++) {
@@ -523,11 +528,11 @@ function renderPool() {
 }
 
 function renderLineup() {
-  const L = S.lineups, max = S.cfg.maxEntries;
+  const L = S.lineups, max = S.cfg.maxEntries, b0 = base();
   $("#lutabs").innerHTML = L.map((l, i) => {
     const ok = l.every(n => n) && salOf(l) <= S.cfg.salaryCap;
-    return `<div class="lutab ${i === S.cur ? "on" : ""}" data-i="${i}"><span class="dot ${ok ? "ok" : ""}"></span><span>Lineup ${i + 1}</span>${L.length > 1 ? `<span class="tx" data-x="${i}">&times;</span>` : ""}</div>`;
-  }).join("") + (L.length < max ? `<button class="luadd" id="luadd">${PLUS}</button>` : "");
+    return `<div class="lutab ${i === S.cur ? "on" : ""}" data-i="${i}"><span class="dot ${ok ? "ok" : ""}"></span><span>Lineup ${b0 + i + 1}</span>${L.length > 1 ? `<span class="tx" data-x="${i}">&times;</span>` : ""}</div>`;
+  }).join("") + (b0 + L.length < max ? `<button class="luadd" id="luadd">${PLUS}</button>` : "");
 
   const l = lu(), rem = S.cfg.salaryCap - salOf(l), open = l.filter(n => !n).length;
   const rs = $("#remSal");
@@ -548,7 +553,7 @@ function renderLineup() {
   $("#bEnter").disabled = S.busy || !!S.cfg.locked;
   $("#mbRem").textContent = money(rem);
   $("#mbRem").classList.toggle("neg", rem < 0);
-  $("#mbGo").textContent = `Lineup ${S.cur + 1} (${l.length - open}/${l.length})`;
+  $("#mbGo").textContent = `Lineup ${b0 + S.cur + 1} (${l.length - open}/${l.length})`;
 }
 
 function standings() {
@@ -622,16 +627,17 @@ function toggle(n) {
 async function enter() {
   const name = $("#uname").value.trim();
   const cap = S.cfg.salaryCap, max = S.cfg.maxEntries;
+  const b0 = base();
   if (!name) return toast("Enter your Discord name");
   const subs = [];
   for (let i = 0; i < S.lineups.length; i++) {
     const l = S.lineups[i];
     if (l.every(n => !n)) continue;
-    if (l.some(n => !n)) { S.cur = i; renderAll(); return toast(`Lineup ${i + 1} is incomplete`); }
-    if (salOf(l) > cap) { S.cur = i; renderAll(); return toast(`Lineup ${i + 1} is over the salary cap`); }
+    if (l.some(n => !n)) { S.cur = i; renderAll(); return toast(`Lineup ${b0 + i + 1} is incomplete`); }
+    if (salOf(l) > cap) { S.cur = i; renderAll(); return toast(`Lineup ${b0 + i + 1} is over the salary cap`); }
     subs.push(l.slice());
   }
-  if (!subs.length) return toast("Lineup 1 is incomplete");
+  if (!subs.length) return toast(`Lineup ${b0 + S.cur + 1} is incomplete`);
   const have = S.entries.filter(e => key(e.name) === key(name)).length;
   if (have + subs.length > max) {
     const left = Math.max(0, max - have);
@@ -781,7 +787,7 @@ $("#lutabs").onclick = e => {
     renderPool(); renderLineup(); return;
   }
   if (e.target.closest("#luadd")) {
-    if (S.lineups.length < S.cfg.maxEntries) { S.lineups.push(blank()); S.cur = S.lineups.length - 1; S.pos = S.cfg.slots[0]; }
+    if (base() + S.lineups.length < S.cfg.maxEntries) { S.lineups.push(blank()); S.cur = S.lineups.length - 1; S.pos = S.cfg.slots[0]; }
     renderPool(); renderLineup(); return;
   }
   const t = e.target.closest(".lutab");
@@ -789,6 +795,7 @@ $("#lutabs").onclick = e => {
 };
 $("#bClear").onclick = () => { S.lineups[S.cur] = blank(); S.pos = S.cfg.slots[0]; renderPool(); renderLineup(); };
 $("#bEnter").onclick = enter;
+$("#uname").addEventListener("input", () => renderLineup());
 $("#mbGo").onclick = () => $("#vLineup aside").scrollIntoView({behavior: "smooth", block: "start"});
 $("#mok").onclick = () => $("#ov").classList.add("hide");
 document.querySelectorAll(".sclink").forEach(b => b.onclick = () => $("#scov").classList.remove("hide"));
