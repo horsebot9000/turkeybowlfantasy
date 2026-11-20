@@ -414,7 +414,8 @@ function apply(d) {
   S.pmap = Object.fromEntries(S.players.map(p => [p.name, p]));
   S.entries = (d.entries || []).slice().sort((a, b) => (a.ts || 0) - (b.ts || 0));
   S.points = d.points || {};
-  S.reveal = !CONFIG.API_URL || !!S.cfg.locked;
+  S.reveal = !!S.cfg.locked;
+  if (!S.reveal) S.entries = S.entries.map(({players, ...e}) => e);
   if (!S.lineups.length || S.cfg.slots.join() !== prev) { S.lineups = [blank()]; S.cur = 0; }
   S.lineups = S.lineups.map(l => l.map(n => n && S.pmap[n] ? n : null));
   if (S.cfg.locked && S.view === "lineup") S.view = "standings";
@@ -635,8 +636,9 @@ let popFor = null;
 function showPop(el) {
   const t = el.dataset.o;
   const dst = S.players.find(p => p.team === t && p.pos === "DST");
-  const list = S.players.filter(p => p.team === t && (p.pos === "WR" || p.pos === "RB"))
-    .sort((a, b) => (a.pos === b.pos ? 0 : a.pos === "WR" ? -1 : 1) || b.salary - a.salary);
+  const ord = {QB: 0, WR: 1, RB: 2};
+  const list = S.players.filter(p => p.team === t && p.pos in ord)
+    .sort((a, b) => ord[a.pos] - ord[b.pos] || b.salary - a.salary);
   const pop = $("#pop");
   pop.innerHTML = `<div class="pop-h">${logo(t)}${esc(t)}</div>` + list.map(p =>
     `<div class="pop-r"><div class="s-pos">${esc(p.pos)}</div><div class="s-name">${esc(p.name)}</div><div class="r">${money(p.salary)}</div></div>`).join("")
