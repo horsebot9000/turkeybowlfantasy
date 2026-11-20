@@ -6,208 +6,187 @@
 <title>GFA Turkey Bowl</title>
 <style>
 :root{
-  --green:#53d337;--green-d:#45bb2b;--green-tint:#effae9;
-  --orange:#f46c22;--red:#e5383b;
-  --hdr:#1d1d1d;--bg:#ededed;--panel:#fff;
-  --line:#e2e2e2;--line2:#f0f0f0;
-  --text:#1d1d1d;--muted:#6b6b6b;--faint:#a3a3a3;
+  --bg:#2b2b2d;--nav:#111;--strip:#1c1c1c;--orange:#f46c22;--green:#53d337;
+  --add:#2a8a33;--red:#d0312d;--row:#f4f4f6;--rowb:#dfdfe3;--th:#d5d5d9;
+  --ink:#1e1e1e;--sub:#6e6e73;--cond:"Roboto Condensed","Arial Narrow","Helvetica Neue Condensed",Arial,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{background:var(--bg);color:var(--text);font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif;font-size:14px;-webkit-font-smoothing:antialiased}
+html,body{background:var(--bg);color:#fff;font-family:"Open Sans","Segoe UI",Helvetica,Arial,sans-serif;font-size:13px;-webkit-font-smoothing:antialiased;min-height:100%}
 button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit}
-input{font-family:inherit;color:var(--text)}
+input{font-family:inherit;color:var(--ink)}
 .hide{display:none!important}
+.r{text-align:right}
 
-.nav{background:#000;height:56px;display:flex;align-items:stretch;padding:0 20px;gap:28px;position:sticky;top:0;z-index:30}
-.navtab{color:#fff;font-weight:700;font-size:14px;display:flex;align-items:center;border-bottom:3px solid transparent;padding-top:3px}
-.navtab.on{border-bottom-color:var(--green)}
-.navtab:not(.on){color:#cfcfcf}
+.nav{background:var(--nav);height:56px;position:sticky;top:0;z-index:30}
+.navin{max-width:1060px;margin:0 auto;height:100%;display:flex;align-items:stretch;gap:36px;padding:0 20px}
+.navtab{color:#e9e9e9;font-weight:700;font-size:15px;display:flex;align-items:center;border-bottom:3px solid transparent;padding-top:3px}
+.navtab.on{color:#fff;border-bottom-color:var(--green)}
 .navtab:hover{color:#fff}
 
-.chead{background:var(--hdr);color:#fff}
-.cwrap{max-width:1280px;margin:0 auto;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
-.ctitle{font-size:22px;font-weight:900;letter-spacing:-.2px}
-.cmeta{display:flex;gap:32px}
-.cmeta .k{display:block;font-size:11px;color:#a5a5a5;font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px}
-.cmeta .v{font-size:16px;font-weight:700}
-.st-open{color:var(--green)}
-.st-live{color:var(--orange)}
+.ch{max-width:1060px;margin:0 auto;padding:54px 20px 34px;display:flex;justify-content:space-between;align-items:flex-start;gap:20px}
+.ch h1{font-size:22px;font-weight:700;letter-spacing:-.1px}
+.meta{display:flex;gap:16px;margin-top:8px;font-size:11px;color:#a9a9ae}
+.meta b{font-weight:600;color:#fff2b8;margin-left:3px}
+.live{text-align:center;min-width:120px}
+.lk{font-size:11px;color:#d8d8dc;text-transform:uppercase}
+.lv{font-size:22px;font-weight:700;margin-top:4px}
+.lv.open{color:var(--green)}
+.lv.live2{color:var(--orange)}
 
-.wrap{max-width:1280px;margin:0 auto;padding:16px 20px 40px}
-.grid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:16px;align-items:start}
-.panel{background:var(--panel);border-radius:4px;box-shadow:0 1px 2px rgba(0,0,0,.08);overflow:hidden}
-.side{position:sticky;top:72px}
+.page{max-width:1060px;margin:0 auto;padding:0 20px 60px;display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:18px;align-items:start}
+.tools{height:28px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.srch{position:relative;width:205px;height:24px;background:#fff}
+.srch svg{position:absolute;left:7px;top:6px;color:#333}
+.srch input{width:100%;height:100%;border:0;outline:0;padding:0 8px 0 27px;font-size:11.5px;background:transparent}
+.sx{color:#fff;font-size:20px;line-height:1;width:20px}
+.ptabs{background:var(--strip);height:26px;display:flex}
+.ptab{min-width:26px;padding:0 9px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#c9c9cd}
+.ptab:hover{color:#fff}
+.ptab.on{background:var(--orange);color:#fff}
 
-.bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 16px;border-bottom:1px solid var(--line);min-height:52px;flex-wrap:wrap}
-.ptabs{display:flex;align-self:stretch}
-.ptab{padding:0 14px;font-weight:700;font-size:13px;color:var(--muted);border-bottom:3px solid transparent;display:flex;align-items:center;height:52px}
-.ptab.on{color:#000;border-bottom-color:var(--green)}
-.ptab:hover{color:#000}
-.btitle{font-weight:900;font-size:16px;height:52px;display:flex;align-items:center}
-.search{position:relative;width:240px;max-width:100%}
-.search input{width:100%;height:34px;border:1px solid #d4d4d4;border-radius:17px;padding:0 12px 0 34px;font-size:13px;background:#fff;outline:none}
-.search input:focus{border-color:#000}
-.search svg{position:absolute;left:12px;top:10px;color:var(--faint)}
+.th{background:var(--th);color:#333;font-size:10px;text-transform:uppercase;height:22px;font-weight:400}
+.th [data-sort]{cursor:pointer;user-select:none}
+.th .sorted{font-weight:700;color:#000}
+.th .sorted::after{content:"";display:inline-block;margin-left:4px;vertical-align:middle;border-left:3.5px solid transparent;border-right:3.5px solid transparent}
+.th .sorted.desc::after{border-top:4px solid #000}
+.th .sorted.asc::after{border-bottom:4px solid #000}
 
-.row{display:grid;grid-template-columns:48px minmax(0,1fr) 150px 150px 64px 76px 48px;align-items:center;padding:0 16px}
-.thead{background:#f7f7f7;height:34px;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.3px;border-bottom:1px solid var(--line);text-transform:uppercase}
-.thead [data-sort]{cursor:pointer;user-select:none}
-.thead [data-sort]:hover,.thead .sorted{color:#000}
-.thead .sorted::after{content:"";display:inline-block;margin-left:5px;vertical-align:middle;border-left:4px solid transparent;border-right:4px solid transparent}
-.thead .sorted.desc::after{border-top:5px solid #000}
-.thead .sorted.asc::after{border-bottom:5px solid #000}
-.r{text-align:right}
-.plist{max-height:calc(100vh - 250px);min-height:300px;overflow-y:auto}
-.prow{height:48px;border-bottom:1px solid var(--line2);cursor:pointer}
-.prow:hover{background:#fafafa}
-.prow.on{background:var(--green-tint)}
-.prow.dim{opacity:.4;cursor:default}
-.c-pos{font-weight:700;color:var(--muted);font-size:12px}
-.lg{width:18px;height:18px;object-fit:contain;vertical-align:-4px;margin-right:6px;flex:none}
-.pop-h .lg{width:20px;height:20px;vertical-align:-5px;margin-right:8px}
-.nm{display:flex;align-items:center;min-width:0}
-.nm>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ln{display:block;font-size:11px;font-weight:400;color:var(--muted);overflow:hidden;text-overflow:ellipsis;margin-top:2px}
-.c-name{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:8px}
-.c-team,.c-opp,.c-bid{color:var(--muted);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:8px}
-.c-bid{padding-right:0}
-.opp{cursor:pointer;border-bottom:1px dotted #b5b5b5}
-.opp:hover,.opp.on{color:#000;border-bottom-color:#000}
-.pop{position:fixed;z-index:40;width:260px;background:#fff;border-radius:4px;box-shadow:0 6px 24px rgba(0,0,0,.22);overflow:hidden;pointer-events:none}
-.pop-h{background:var(--hdr);color:#fff;font-weight:900;font-size:14px;padding:10px 12px}
-.pop-r{display:grid;grid-template-columns:34px minmax(0,1fr) 60px;align-items:center;height:34px;padding:0 12px;border-bottom:1px solid var(--line2);font-size:13px}
-.pop-r:last-child{border-bottom:0}
-.pop-dl{grid-template-columns:34px minmax(0,1fr);height:auto;min-height:34px;padding-top:8px;padding-bottom:8px;background:#f7f7f7}
-.pop-dl .s-name{white-space:normal;font-weight:400;color:var(--muted)}
-.pop-r .s-pos{font-size:11px}
-.pop-r .s-name{font-size:13px}
-.pop-r .r{font-weight:700}
-.thead .c-team,.thead .c-opp,.thead .c-bid,.thead .s-sl{font-size:11px;color:inherit;overflow:visible}
-.c-sal{font-weight:700}
-.c-add{display:flex;justify-content:flex-end}
-.add{width:28px;height:28px;border-radius:50%;background:var(--green);color:#000;display:flex;align-items:center;justify-content:center;flex:none}
-.prow:hover .add{background:var(--green-d)}
-.add.rm,.prow:hover .add.rm{background:#fff;box-shadow:inset 0 0 0 2px var(--red);color:var(--red)}
-.add.off,.prow:hover .add.off{background:#dadada;color:#fff}
+.row{display:grid;grid-template-columns:minmax(0,1fr) 42px 138px 138px 46px 62px 30px;align-items:center;padding:0 0 0 10px}
+.plist{background:var(--row);height:min(470px,calc(100vh - 300px));min-height:320px;overflow-y:auto}
+.prow{height:27px;border-bottom:1px solid var(--rowb);color:var(--ink);cursor:pointer;font-size:12px}
+.prow:hover{background:#e8e8ec}
+.prow.on{background:#e1f2db}
+.prow.dim{opacity:.38;cursor:default}
+.cl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:8px;display:flex;align-items:center;min-width:0}
+.cl>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-pos{color:var(--ink)}
+.c-tm{color:#3a3a3e;font-size:11.5px}
+.c-add{display:flex;justify-content:center}
+.add{width:18px;height:18px;border-radius:50%;background:var(--add);color:#fff;display:flex;align-items:center;justify-content:center;flex:none}
+.add.rm{background:var(--red)}
+.add.off{background:#bdbdc2}
+.lg{width:15px;height:15px;object-fit:contain;margin-right:5px;flex:none}
+.opp{cursor:pointer}
+.opp:hover,.opp.on{text-decoration:underline}
 
-.lutabs{display:flex;align-items:stretch;border-bottom:1px solid var(--line);height:52px;padding:0 6px}
-.lutab{display:flex;align-items:center;gap:6px;padding:0 10px;font-weight:700;font-size:13px;color:var(--muted);border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
-.lutab.on{color:#000;border-bottom-color:var(--green)}
-.lutab:hover{color:#000}
-.dot{width:7px;height:7px;border-radius:50%;background:#d0d0d0}
+.lutabs{height:28px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.lutab{height:24px;padding:0 9px;display:flex;align-items:center;gap:6px;background:#3d3d40;color:#d0d0d4;font-family:var(--cond);font-stretch:condensed;font-weight:700;font-size:12.5px;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+.lutab:hover{color:#fff}
+.lutab.on{background:var(--orange);color:#fff}
+.dot{width:6px;height:6px;border-radius:50%;background:#77777c}
 .dot.ok{background:var(--green)}
-.tx{width:18px;height:18px;border-radius:50%;font-size:14px;line-height:18px;color:var(--faint);display:flex;align-items:center;justify-content:center}
-.tx:hover{background:#ececec;color:#000}
-.luadd{margin-left:auto;align-self:center;width:28px;height:28px;border-radius:50%;box-shadow:inset 0 0 0 2px var(--green);color:var(--green-d);display:flex;align-items:center;justify-content:center}
-.luadd:hover{background:var(--green);color:#000}
-.lusal{display:flex;justify-content:space-between;padding:12px 16px;background:#f7f7f7;border-bottom:1px solid var(--line)}
-.lusal>div:last-child{text-align:right}
-.lusal .k{display:block;font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.3px;text-transform:uppercase;margin-bottom:2px}
-.lusal .v{font-size:18px;font-weight:900}
-.lusal .neg{color:var(--red)}
-.slot{display:grid;grid-template-columns:56px minmax(0,1fr) 72px 30px;align-items:center;height:50px;padding:0 16px;border-bottom:1px solid var(--line2);cursor:pointer}
-.slot:not(.full){background:#fbfbfb}
-.slot:hover{background:#f3f3f3}
-.s-pos{font-weight:700;font-size:12px;color:var(--muted)}
-.s-name{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:8px}
-.s-sal{text-align:right;font-weight:700}
-.s-x{display:flex;justify-content:flex-end}
-.lufoot{padding:16px;display:flex;flex-direction:column;gap:12px}
-.lufoot input{height:42px;border:1px solid #d4d4d4;border-radius:4px;padding:0 12px;font-size:14px;font-weight:700;outline:none}
-.lufoot input:focus{border-color:#000}
-.btns{display:flex;gap:10px}
-.btn{height:44px;border-radius:4px;font-weight:900;font-size:15px;flex:1}
-.btn.ghost{background:#fff;box-shadow:inset 0 0 0 1px #cfcfcf;color:#000;flex:0 0 110px}
-.btn.ghost:hover{box-shadow:inset 0 0 0 1px #000}
-.btn.go{background:var(--green);color:#000}
-.btn.go:hover{background:var(--green-d)}
-.btn.go:disabled{background:#dadada;color:#8a8a8a;cursor:default}
+.lutab.on .dot:not(.ok){background:#ffd3bb}
+.tx{font-size:14px;line-height:1;opacity:.7}
+.tx:hover{opacity:1}
+.luadd{width:24px;height:24px;background:#3d3d40;color:#d0d0d4;display:flex;align-items:center;justify-content:center}
+.luadd:hover{color:#fff}
+.luh{background:var(--strip);height:30px;display:flex;align-items:center;justify-content:space-between;padding:0 10px}
+.lut{flex:none;max-width:45%;font-family:var(--cond);font-stretch:condensed;font-weight:700;font-size:15px;letter-spacing:.2px;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px}
+.lus{font-size:11.5px;color:#e2e2e6;display:flex;align-items:center;gap:7px;white-space:nowrap}
+.lus b{font-weight:400;font-size:13.5px;color:var(--green);margin-left:3px}
+.lus b.neg{color:#ff5a4f}
+.lus i{width:1px;height:18px;background:#6a6a6e}
+.srow2{display:grid;grid-template-columns:44px minmax(0,1fr) 68px 26px;align-items:center;padding:0 0 0 10px}
+.slots{background:var(--row)}
+.slot{height:27px;border-bottom:1px solid var(--rowb);color:var(--ink);font-size:12px;cursor:pointer}
+.slot:hover{background:#e8e8ec}
+.slot .x{color:#8a8a90;font-size:15px;line-height:1;display:flex;justify-content:center}
+.slot .x:hover{color:var(--red)}
+.act{display:flex;gap:8px;margin-top:14px}
+.act input{flex:1;min-width:0;height:30px;border:0;outline:0;padding:0 9px;font-size:13px;background:#fff}
+.enter{height:30px;min-width:150px;background:var(--green);color:#111;font-family:var(--cond);font-stretch:condensed;font-weight:700;font-size:17px;text-transform:uppercase;letter-spacing:.2px}
+.enter:hover{background:#4bc22f}
+.enter:disabled{background:#5d5d61;color:#a3a3a8;cursor:default}
+.clr{display:flex;align-items:center;gap:5px;color:#d6d6da;font-size:14px;margin-top:14px}
+.clr:hover{color:#fff}
 
-.srow{display:grid;grid-template-columns:64px minmax(0,1fr) 96px 84px;align-items:center;padding:0 16px}
-.sent{height:48px;border-bottom:1px solid var(--line2);cursor:pointer}
-.sent:hover{background:#fafafa}
-.sent.on{background:var(--green-tint)}
-.s-rank{font-weight:700;color:var(--muted)}
-.s-ent{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:8px}
-.s-sl{color:var(--muted);font-size:13px}
-.s-pts{font-weight:900;font-size:15px}
-.slist{max-height:calc(100vh - 250px);min-height:300px;overflow-y:auto}
-.dhead{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line);min-height:68px}
-.dname{font-weight:900;font-size:16px}
-.dsub{font-size:12px;color:var(--muted);font-weight:700;margin-top:3px}
-.dpts{font-size:24px;font-weight:900;text-align:right;line-height:1}
-.dpts span{display:block;font-size:11px;color:var(--muted);letter-spacing:.3px;margin-top:4px}
-.drow{display:grid;grid-template-columns:56px minmax(0,1fr) 76px 64px;align-items:center;padding:0 16px}
-.dl{height:48px;border-bottom:1px solid var(--line2)}
-.dl .s-name{padding-right:8px}
-.d-pct{color:var(--muted);font-size:13px}
-.d-pts{font-weight:900}
+.srow{display:grid;grid-template-columns:56px minmax(0,1fr) 80px 70px;align-items:center;padding:0 10px}
+.sent{height:27px;border-bottom:1px solid var(--rowb);color:var(--ink);cursor:pointer;font-size:12px}
+.sent:hover{background:#e8e8ec}
+.sent.on{background:#e1f2db}
+.s-pts{font-weight:700}
+.drow{display:grid;grid-template-columns:44px minmax(0,1fr) 74px 58px;align-items:center;padding:0 10px}
+.dl{height:27px;border-bottom:1px solid var(--rowb);color:var(--ink);font-size:12px}
+.dl .b{font-weight:700}
 
-.ov{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px}
-.modal{background:#fff;border-radius:6px;width:360px;max-width:100%;padding:28px 24px 20px;text-align:center}
-.mchk{width:52px;height:52px;border-radius:50%;background:var(--green);color:#000;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
-.mt{font-size:20px;font-weight:900}
-.mb{color:var(--muted);font-weight:700;margin:6px 0 20px}
-.mbtns{display:flex;flex-direction:column;gap:10px}
-.modal .btn{width:100%;flex:none}
-.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--red);color:#fff;font-weight:700;padding:12px 18px;border-radius:4px;opacity:0;pointer-events:none;transition:.2s;z-index:60;max-width:90vw;text-align:center}
+.pop{position:fixed;z-index:40;width:260px;background:var(--row);box-shadow:0 8px 26px rgba(0,0,0,.45);pointer-events:none;color:var(--ink)}
+.pop-h{background:var(--strip);color:#fff;height:30px;display:flex;align-items:center;padding:0 10px;font-family:var(--cond);font-stretch:condensed;font-weight:700;font-size:14px;text-transform:uppercase}
+.pop-h .lg{width:18px;height:18px;margin-right:7px}
+.pop-r{display:grid;grid-template-columns:34px minmax(0,1fr) 58px;align-items:center;height:26px;padding:0 10px;border-bottom:1px solid var(--rowb);font-size:12px}
+.pop-r:last-child{border-bottom:0}
+.pop-dl{grid-template-columns:34px minmax(0,1fr);height:auto;min-height:26px;padding-top:6px;padding-bottom:6px;color:var(--sub)}
+
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal{background:var(--bg);width:340px;max-width:100%;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.mh{background:var(--strip);height:34px;display:flex;align-items:center;padding:0 12px;font-family:var(--cond);font-stretch:condensed;font-weight:700;font-size:16px;text-transform:uppercase}
+.mbd{padding:18px 14px 14px}
+.mb{color:#e2e2e6;font-size:14px;margin-bottom:16px}
+.mbtns{display:flex;flex-direction:column;gap:8px}
+.mbtns button{height:32px;font-family:var(--cond);font-stretch:condensed;font-weight:700;font-size:16px;text-transform:uppercase}
+.mgo{background:var(--green);color:#111}
+.mgo:hover{background:#4bc22f}
+.mdone{background:#4d4d50;color:#fff}
+.mdone:hover{background:#5a5a5e}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--red);color:#fff;font-weight:600;padding:10px 16px;opacity:0;pointer-events:none;transition:.2s;z-index:60;max-width:90vw;text-align:center}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
-@media(max-width:1100px){
-  .row{grid-template-columns:44px minmax(0,1fr) 124px 124px 56px 70px 44px}
+@media(max-width:1000px){
+  .row{grid-template-columns:minmax(0,1fr) 38px 112px 112px 42px 58px 28px}
 }
 @media(max-width:900px){
-  .grid{grid-template-columns:1fr}
-  .side{position:static}
-  .plist,.slist{max-height:60vh}
-  .search{width:100%;margin-bottom:10px}
-  .bar{padding-top:0}
+  .page{grid-template-columns:1fr}
+  .plist{height:55vh}
+  .ch{padding:28px 16px 22px;flex-wrap:wrap}
+  .live{text-align:left;min-width:0}
+  .page{padding:0 12px 40px}
 }
 @media(max-width:560px){
-  .wrap{padding:10px 10px 30px}
-  .cmeta{gap:20px}
-  .row{grid-template-columns:34px minmax(0,1fr) 92px 44px 54px 34px;padding:0 10px}
-  .c-opp{font-size:12px}
-  .add{width:26px;height:26px}
-  .c-team{display:none}
-  .ptab{padding:0 10px}
-  .srow{grid-template-columns:44px minmax(0,1fr) 76px;padding:0 12px}
-  .s-sl{display:none}
+  .row{grid-template-columns:minmax(0,1fr) 30px 92px 38px 54px 26px;padding-left:8px}
+  .row .c-team{display:none}
+  .meta{flex-wrap:wrap;gap:6px 14px}
+  .enter{min-width:110px}
+  .lus{font-size:11px;gap:6px}
+  .lus b{font-size:12.5px}
 }
 </style>
 </head>
 <body>
 
-<nav class="nav">
+<nav class="nav"><div class="navin">
   <button class="navtab on" data-v="lineup" id="navLineup">Lineup</button>
   <button class="navtab" data-v="standings" id="navStand">Standings</button>
-</nav>
+</div></nav>
 
-<header class="chead">
-  <div class="cwrap">
-    <div class="ctitle" id="cTitle"></div>
-    <div class="cmeta">
-      <div><span class="k">Entries</span><span class="v" id="mEntries">0</span></div>
-      <div><span class="k">Salary Cap</span><span class="v" id="mCap"></span></div>
-      <div><span class="k">Status</span><span class="v" id="mStatus"></span></div>
+<header class="ch">
+  <div>
+    <h1 id="cTitle"></h1>
+    <div class="meta">
+      <span>Entries:<b id="mEntries">0</b></span>
+      <span>Salary Cap:<b id="mCap"></b></span>
+      <span>Max Entries:<b id="mMax"></b></span>
     </div>
+  </div>
+  <div class="live">
+    <div class="lk">Status</div>
+    <div class="lv" id="mStatus"></div>
   </div>
 </header>
 
-<main class="wrap grid" id="vLineup">
-  <section class="panel">
-    <div class="bar">
-      <div class="ptabs" id="ptabs"></div>
-      <div class="search">
-        <svg width="14" height="14" viewBox="0 0 16 16"><circle cx="7" cy="7" r="5.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        <input id="q" placeholder="Search Players" autocomplete="off">
+<main class="page" id="vLineup">
+  <section>
+    <div class="tools">
+      <div class="srch">
+        <svg width="12" height="12" viewBox="0 0 16 16"><circle cx="6.8" cy="6.8" r="5.3" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M10.8 10.8l4 4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
+        <input id="q" placeholder="Player Search" autocomplete="off">
       </div>
+      <button class="sx" id="qx">&times;</button>
     </div>
-    <div class="row thead" id="phead">
-      <div data-sort="pos">Pos</div>
+    <div class="ptabs" id="ptabs"></div>
+    <div class="row th" id="phead">
       <div data-sort="name">Player</div>
+      <div data-sort="pos">Pos</div>
       <div class="c-team" data-sort="team">Team</div>
-      <div class="c-opp" data-sort="opp">Opp</div>
+      <div data-sort="opp">Opp</div>
       <div class="r" data-sort="bid">Bid</div>
       <div class="r" data-sort="salary">Salary</div>
       <div></div>
@@ -215,49 +194,47 @@ input{font-family:inherit;color:var(--text)}
     <div class="plist" id="plist"></div>
   </section>
 
-  <aside class="panel side">
+  <aside>
     <div class="lutabs" id="lutabs"></div>
-    <div class="lusal">
-      <div><span class="k">Avg. Rem. / Player</span><span class="v" id="avgRem"></span></div>
-      <div><span class="k">Rem. Salary</span><span class="v" id="remSal"></span></div>
+    <div class="luh">
+      <span class="lut">Lineup</span>
+      <span class="lus">Avg. Rem./Player:<b id="avgRem"></b><i></i>Rem. Salary:<b id="remSal"></b></span>
     </div>
-    <div id="slots"></div>
-    <div class="lufoot">
+    <div class="srow2 th"><div>Pos</div><div>Player</div><div class="r">Salary</div><div></div></div>
+    <div class="slots" id="slots"></div>
+    <div class="act">
       <input id="uname" placeholder="Discord Name" maxlength="32" autocomplete="off">
-      <div class="btns">
-        <button class="btn ghost" id="bClear">Clear</button>
-        <button class="btn go" id="bEnter">Enter</button>
-      </div>
+      <button class="enter" id="bEnter">Enter</button>
     </div>
+    <button class="clr" id="bClear"><svg width="14" height="14" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3.6 12.4l8.8-8.8" stroke="currentColor" stroke-width="1.6"/></svg>Clear</button>
   </aside>
 </main>
 
-<main class="wrap grid hide" id="vStand">
-  <section class="panel">
-    <div class="bar">
-      <div class="btitle">Standings</div>
-      <div class="search">
-        <svg width="14" height="14" viewBox="0 0 16 16"><circle cx="7" cy="7" r="5.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        <input id="sq" placeholder="Search Entries" autocomplete="off">
+<main class="page hide" id="vStand">
+  <section>
+    <div class="tools">
+      <div class="srch">
+        <svg width="12" height="12" viewBox="0 0 16 16"><circle cx="6.8" cy="6.8" r="5.3" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M10.8 10.8l4 4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
+        <input id="sq" placeholder="Entry Search" autocomplete="off">
       </div>
     </div>
-    <div class="srow thead">
-      <div>Rank</div>
-      <div>Entry</div>
-      <div class="r s-sl">Salary</div>
-      <div class="r">FPTS</div>
-    </div>
-    <div class="slist" id="slist"></div>
+    <div class="ptabs"><span class="ptab on">Standings</span></div>
+    <div class="srow th"><div>Rank</div><div>Entry</div><div class="r">Salary</div><div class="r">FPTS</div></div>
+    <div class="plist" id="slist"></div>
   </section>
-  <aside class="panel side" id="sdetail"></aside>
+  <aside>
+    <div class="lutabs"></div>
+    <div id="sdetail"></div>
+  </aside>
 </main>
 
 <div class="ov hide" id="ov">
   <div class="modal">
-    <div class="mchk"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-    <div class="mt" id="mt"></div>
-    <div class="mb" id="mb"></div>
-    <div class="mbtns"><button class="btn go hide" id="mnext"></button><button class="btn ghost" id="mok">Done</button></div>
+    <div class="mh" id="mt"></div>
+    <div class="mbd">
+      <div class="mb" id="mb"></div>
+      <div class="mbtns"><button class="mgo hide" id="mnext"></button><button class="mdone" id="mok">Done</button></div>
+    </div>
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -266,7 +243,7 @@ input{font-family:inherit;color:var(--text)}
 <script>
 /* ===== CONFIG ===== */
 const CONFIG = {
-  API_URL: "https://script.google.com/macros/s/AKfycbyENCa2nz-p6qfiBUiPENh00SQz5cBvnn67ej62FTCesoDo0Lla3jsnRpnyyvnRpBzV_w/exec",                      // paste Apps Script web app URL here; blank = local test mode
+  API_URL: "https://script.google.com/macros/s/AKfycbyENCa2nz-p6qfiBUiPENh00SQz5cBvnn67ej62FTCesoDo0Lla3jsnRpnyyvnRpBzV_w/exec",
   contestName: "GFA Turkey Bowl",
   salaryCap: 35000,
   slots: ["QB","RB","WR","WR","WR","DST"],
@@ -364,8 +341,8 @@ const r2 = n => Math.round(n * 100) / 100;
 const fmtPts = n => n == null ? "-" : r2(n).toFixed(2);
 const key = s => String(s).trim().toLowerCase();
 const LS_ENT = "contest_entries_v1", LS_NAME = "contest_name_v1";
-const PLUS = '<svg width="14" height="14" viewBox="0 0 16 16"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>';
-const MINUS = '<svg width="14" height="14" viewBox="0 0 16 16"><path d="M3 8h10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>';
+const PLUS = '<svg width="10" height="10" viewBox="0 0 16 16"><path d="M8 2.5v11M2.5 8h11" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>';
+const MINUS = '<svg width="10" height="10" viewBox="0 0 16 16"><path d="M2.5 8h11" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>';
 
 let S = {
   cfg: {...CONFIG}, players: [], pmap: {}, entries: [], points: {}, reveal: false,
@@ -408,6 +385,7 @@ async function load() {
 function apply(d) {
   const prev = S.cfg.slots.join();
   const c = Object.fromEntries(Object.entries(d.config || {}).filter(([, v]) => v !== "" && v != null));
+  delete c.contestName;
   S.cfg = {...CONFIG, ...c};
   S.players = (d.players && d.players.length) ? d.players
     : SEED.map(([name, pos, salary, team, opp, bid, linemen]) => ({name, pos, salary, team, opp, bid: bid === "" ? null : bid, linemen: linemen || ""}));
@@ -428,9 +406,10 @@ function renderAll() {
   $("#cTitle").textContent = S.cfg.contestName;
   $("#mEntries").textContent = S.entries.length.toLocaleString("en-US");
   $("#mCap").textContent = money(S.cfg.salaryCap);
+  $("#mMax").textContent = S.cfg.maxEntries;
   const st = $("#mStatus");
   st.textContent = S.cfg.locked ? "Live" : "Open";
-  st.className = "v " + (S.cfg.locked ? "st-live" : "st-open");
+  st.className = "lv " + (S.cfg.locked ? "live2" : "open");
   $("#navLineup").classList.toggle("hide", !!S.cfg.locked);
   document.querySelectorAll(".navtab").forEach(b => b.classList.toggle("on", b.dataset.v === S.view));
   $("#vLineup").classList.toggle("hide", S.view !== "lineup");
@@ -455,7 +434,7 @@ function renderPool() {
   const q = key(S.q), l = lu(), {k, d} = S.sort;
   const rem = S.cfg.salaryCap - salOf(l), last = l.filter(n => !n).length === 1;
   const list = S.players
-    .filter(p => (S.pos === "ALL" || eligible(S.pos, p.pos)) && (!q || p.name.toLowerCase().includes(q)))
+    .filter(p => eligible(S.pos, p.pos) && (!q || p.name.toLowerCase().includes(q)))
     .sort((a, b) => {
       if (k === "name" || k === "pos" || k === "team" || k === "opp") {
         const x = String(a[k] || "").toLowerCase(), y = String(b[k] || "").toLowerCase();
@@ -470,12 +449,12 @@ function renderPool() {
     const cls = inL ? "on" : (!open ? "dim" : "");
     const btn = inL ? `<span class="add rm">${MINUS}</span>` : `<span class="add ${open ? "" : "off"}">${PLUS}</span>`;
     return `<div class="row prow ${cls}" data-n="${esc(p.name)}">
+      <div class="cl"><span>${esc(p.name)}</span></div>
       <div class="c-pos">${esc(p.pos)}</div>
-      <div class="c-name">${esc(p.name)}${p.linemen ? `<span class="ln">${esc(p.linemen)}</span>` : ""}</div>
-      <div class="c-team">${p.team ? `${logo(p.team)}<span class="opp" data-o="${esc(p.team)}">${esc(p.team)}</span>` : "-"}</div>
-      <div class="c-opp">${p.opp ? `${logo(p.opp)}<span class="opp" data-o="${esc(p.opp)}">${esc(p.opp)}</span>` : "-"}</div>
-      <div class="c-bid r">${p.bid != null && p.bid !== "" ? money(p.bid) : "-"}</div>
-      <div class="c-sal r">${money(p.salary)}</div>
+      <div class="cl c-tm c-team">${p.team ? `${logo(p.team)}<span class="opp" data-o="${esc(p.team)}">${esc(p.team)}</span>` : "-"}</div>
+      <div class="cl c-tm">${p.opp ? `${logo(p.opp)}<span class="opp" data-o="${esc(p.opp)}">${esc(p.opp)}</span>` : "-"}</div>
+      <div class="r">${p.bid != null && p.bid !== "" ? money(p.bid) : "-"}</div>
+      <div class="r">${money(p.salary)}</div>
       <div class="c-add">${btn}</div>
     </div>`;
   }).join("");
@@ -485,7 +464,7 @@ function renderLineup() {
   const L = S.lineups, max = S.cfg.maxEntries;
   $("#lutabs").innerHTML = L.map((l, i) => {
     const ok = l.every(n => n) && salOf(l) <= S.cfg.salaryCap;
-    return `<div class="lutab ${i === S.cur ? "on" : ""}" data-i="${i}"><span class="dot ${ok ? "ok" : ""}"></span><span>Lineup ${i + 1}</span>${L.length > 1 ? `<button class="tx" data-x="${i}">&times;</button>` : ""}</div>`;
+    return `<div class="lutab ${i === S.cur ? "on" : ""}" data-i="${i}"><span class="dot ${ok ? "ok" : ""}"></span><span>Lineup ${i + 1}</span>${L.length > 1 ? `<span class="tx" data-x="${i}">&times;</span>` : ""}</div>`;
   }).join("") + (L.length < max ? `<button class="luadd" id="luadd">${PLUS}</button>` : "");
 
   const l = lu(), rem = S.cfg.salaryCap - salOf(l), open = l.filter(n => !n).length;
@@ -496,16 +475,15 @@ function renderLineup() {
 
   $("#slots").innerHTML = S.cfg.slots.map((s, i) => {
     const p = l[i] ? S.pmap[l[i]] : null;
-    return `<div class="slot ${p ? "full" : ""}" data-i="${i}">
-      <div class="s-pos">${esc(s)}</div>
-      <div class="s-name">${p ? `<div class="nm">${logo(p.team)}<span>${esc(p.name)}</span></div>` : ""}</div>
-      <div class="s-sal">${p ? money(p.salary) : ""}</div>
-      <div class="s-x">${p ? `<span class="tx">&times;</span>` : ""}</div>
+    return `<div class="srow2 slot" data-i="${i}">
+      <div>${esc(s)}</div>
+      <div class="cl">${p ? `${logo(p.team)}<span>${esc(p.name)}</span>` : ""}</div>
+      <div class="r">${p ? money(p.salary) : ""}</div>
+      <div class="x">${p ? "&times;" : ""}</div>
     </div>`;
   }).join("");
 
-  const b = $("#bEnter");
-  b.disabled = S.busy || !!S.cfg.locked;
+  $("#bEnter").disabled = S.busy || !!S.cfg.locked;
 }
 
 function standings() {
@@ -536,27 +514,25 @@ function renderStandings() {
   const vis = rows.filter(r => !q || r.label.toLowerCase().includes(q));
 
   $("#slist").innerHTML = vis.map(r => `<div class="srow sent ${r.id === S.sel ? "on" : ""}" data-id="${r.id}">
-      <div class="s-rank">${r.rank ?? "-"}</div>
-      <div class="s-ent">${esc(r.label)}</div>
-      <div class="r s-sl">${r.players ? money(r.salary) : "-"}</div>
+      <div>${r.rank ?? "-"}</div>
+      <div class="cl"><span>${esc(r.label)}</span></div>
+      <div class="r">${r.players ? money(r.salary) : "-"}</div>
       <div class="r s-pts">${fmtPts(r.pts)}</div>
     </div>`).join("");
 
   const r = rows.find(x => x.id === S.sel);
   const det = $("#sdetail");
-  if (!r) { det.innerHTML = `<div class="dhead"><div class="dname">&nbsp;</div></div>`; return; }
-  const sub = [r.rank ? `Rank ${r.rank}` : "", r.players ? money(r.salary) : ""].filter(Boolean).join(" · ");
-  det.innerHTML = `<div class="dhead">
-      <div><div class="dname">${esc(r.label)}</div><div class="dsub">${sub || "&nbsp;"}</div></div>
-      <div class="dpts">${fmtPts(r.pts)}<span>FPTS</span></div>
-    </div>
-    <div class="drow thead"><div>Pos</div><div>Player</div><div class="r">%Drafted</div><div class="r">FPTS</div></div>
-    ${S.cfg.slots.map((s, i) => {
+  const head = (a, b) => `<div class="luh"><span class="lut">${a}</span><span class="lus">${b}</span></div>`;
+  if (!r) { det.innerHTML = head("Lineup", ""); return; }
+  const sub = [r.rank ? `Rank:<b>${r.rank}</b>` : "", `FPTS:<b>${fmtPts(r.pts)}</b>`].filter(Boolean).join("<i></i>");
+  det.innerHTML = head(esc(r.label), sub) +
+    `<div class="drow th"><div>Pos</div><div>Player</div><div class="r">%Drafted</div><div class="r">FPTS</div></div>
+    <div class="slots">${S.cfg.slots.map((s, i) => {
       const n = r.players ? r.players[i] : null;
-      const pct = n && nRev ? (drafted[n] / nRev * 100).toFixed(1) + "%" : "-";
-      const pts = n ? fmtPts(Number(S.points[n]) || 0) : "-";
-      return `<div class="drow dl"><div class="s-pos">${esc(s)}</div><div class="s-name">${n ? `<div class="nm">${logo(S.pmap[n] && S.pmap[n].team)}<span>${esc(n)}</span></div>` : ""}</div><div class="r d-pct">${pct}</div><div class="r d-pts">${pts}</div></div>`;
-    }).join("")}`;
+      const pct = n && nRev ? (drafted[n] / nRev * 100).toFixed(1) + "%" : "";
+      const pts = n ? fmtPts(Number(S.points[n]) || 0) : "";
+      return `<div class="drow dl"><div>${esc(s)}</div><div class="cl">${n ? `${logo(S.pmap[n] && S.pmap[n].team)}<span>${esc(n)}</span>` : ""}</div><div class="r">${pct}</div><div class="r b">${pts}</div></div>`;
+    }).join("")}</div>`;
 }
 
 /* ===== ACTIONS ===== */
@@ -641,8 +617,8 @@ function showPop(el) {
     .sort((a, b) => ord[a.pos] - ord[b.pos] || b.salary - a.salary);
   const pop = $("#pop");
   pop.innerHTML = `<div class="pop-h">${logo(t)}${esc(t)}</div>` + list.map(p =>
-    `<div class="pop-r"><div class="s-pos">${esc(p.pos)}</div><div class="s-name">${esc(p.name)}</div><div class="r">${money(p.salary)}</div></div>`).join("")
-    + (dst && dst.linemen ? `<div class="pop-r pop-dl"><div class="s-pos">DL</div><div class="s-name">${esc(dst.linemen)}</div></div>` : "");
+    `<div class="pop-r"><div>${esc(p.pos)}</div><div class="cl"><span>${esc(p.name)}</span></div><div class="r">${money(p.salary)}</div></div>`).join("")
+    + (dst && dst.linemen ? `<div class="pop-r pop-dl"><div>DL</div><div>${esc(dst.linemen)}</div></div>` : "");
   pop.classList.remove("hide");
   const b = el.getBoundingClientRect(), w = pop.offsetWidth, ht = pop.offsetHeight;
   let x = Math.min(Math.max(8, b.left), window.innerWidth - w - 8);
@@ -668,12 +644,14 @@ function toast(m) {
 }
 
 /* ===== EVENTS ===== */
+const hoverable = () => matchMedia("(hover:hover)").matches;
 document.querySelectorAll(".navtab").forEach(b => b.onclick = () => {
   S.view = b.dataset.v; renderAll();
   if (S.view === "standings" && CONFIG.API_URL) load();
 });
 $("#ptabs").onclick = e => { const b = e.target.closest("[data-p]"); if (b) { S.pos = b.dataset.p; renderPool(); } };
 $("#q").oninput = e => { S.q = e.target.value; renderPool(); };
+$("#qx").onclick = () => { $("#q").value = ""; S.q = ""; renderPool(); };
 $("#phead").onclick = e => {
   const h = e.target.closest("[data-sort]"); if (!h) return;
   const k = h.dataset.sort, txt = ["name", "pos", "team", "opp"].includes(k);
@@ -682,11 +660,11 @@ $("#phead").onclick = e => {
 };
 $("#plist").onclick = e => {
   const o = e.target.closest(".opp");
-  if (o && !matchMedia("(hover:hover)").matches) { if (popFor === o) hidePop(); else showPop(o); return; }
+  if (o && !hoverable()) { if (popFor === o) hidePop(); else showPop(o); return; }
   const r = e.target.closest(".prow"); if (r) toggle(r.dataset.n);
 };
-$("#plist").onmouseover = e => { const o = e.target.closest(".opp"); if (o && matchMedia("(hover:hover)").matches) showPop(o); };
-$("#plist").onmouseout = e => { const o = e.target.closest(".opp"); if (o && !o.contains(e.relatedTarget) && matchMedia("(hover:hover)").matches) hidePop(); };
+$("#plist").onmouseover = e => { const o = e.target.closest(".opp"); if (o && hoverable()) showPop(o); };
+$("#plist").onmouseout = e => { const o = e.target.closest(".opp"); if (o && !o.contains(e.relatedTarget) && hoverable()) hidePop(); };
 $("#plist").addEventListener("scroll", () => hidePop());
 window.addEventListener("scroll", () => hidePop(), {passive: true});
 document.addEventListener("click", e => { if (!e.target.closest(".opp")) hidePop(); });
@@ -706,13 +684,13 @@ $("#lutabs").onclick = e => {
     renderPool(); renderLineup(); return;
   }
   if (e.target.closest("#luadd")) {
-    if (S.lineups.length < S.cfg.maxEntries) { S.lineups.push(blank()); S.cur = S.lineups.length - 1; }
+    if (S.lineups.length < S.cfg.maxEntries) { S.lineups.push(blank()); S.cur = S.lineups.length - 1; S.pos = S.cfg.slots[0]; }
     renderPool(); renderLineup(); return;
   }
   const t = e.target.closest(".lutab");
   if (t) { S.cur = +t.dataset.i; renderPool(); renderLineup(); }
 };
-$("#bClear").onclick = () => { S.lineups[S.cur] = blank(); renderPool(); renderLineup(); };
+$("#bClear").onclick = () => { S.lineups[S.cur] = blank(); S.pos = S.cfg.slots[0]; renderPool(); renderLineup(); };
 $("#bEnter").onclick = enter;
 $("#mok").onclick = () => $("#ov").classList.add("hide");
 $("#mnext").onclick = () => {
